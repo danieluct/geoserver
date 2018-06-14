@@ -22,12 +22,15 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 import net.opengis.wfs.XlinkPropertyNameType;
+import net.opengis.wfs20.QueryType;
 import net.opengis.wfs20.ResultTypeType;
 import net.opengis.wfs20.StoredQueryType;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.LazyLoader;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.Predicates;
 import org.geoserver.catalog.ResourcePool;
@@ -251,8 +254,23 @@ public class GetFeature {
         boolean getFeatureById = processStoredQueries(request);
         queries = request.getQueries();
 
-        if (request.isQueryTypeNamesUnset() || getFeatureById) {
+        if (request.isQueryTypeNamesUnset()) {
+            List<Query> initialQueries = new ArrayList();
+            initialQueries.addAll(queries);
             expandTypeNames(request, queries, getFeatureById, getCatalog());
+
+            // if no feature type was detected from the prefix, inject all available complex types
+            if (getFeatureById && queries.isEmpty()) {
+                queries = injectComplexTypes(request, initialQueries.get(0), getCatalog());
+                // an exception is raised when no type is detected and there a no other complex
+                // types to check
+                if (queries.isEmpty()) {
+                    throw new WFSException(
+                            request,
+                            "Could not find feature with specified id",
+                            WFSException.NOT_FOUND);
+                }
+            }
         }
 
         // locking, since WFS 2.0 there is a "some" mode that influences how the features should
@@ -845,6 +863,7 @@ public class GetFeature {
                 q.getFilter().accept(v, null);
                 q.getTypeNames().addAll(v.getTypeNames());
             }
+
             if (q.getTypeNames().isEmpty()) {
                 if (getFeatureById) {
                     iterator.remove();
@@ -854,12 +873,60 @@ public class GetFeature {
                 }
             }
         }
-        // an exception is raised when no type is detected and there a no other complex types to
-        // check
-        if (getFeatureById && queries.isEmpty()) {
-            throw new WFSException(
-                    request, "Could not find feature with specified id", WFSException.NOT_FOUND);
+    }
+
+    /**
+     * Collects complex feature types from catalog
+     *
+     * @param catalog the catalog to extract complex features from
+     * @return A list of complex feature types in the catalog
+     */
+    static List<FeatureTypeInfo> getComplexFeatureTypes(Catalog catalog) {
+        List<FeatureTypeInfo> complexTypes = null;
+        for (DataStoreInfo dsInfo : catalog.getDataStores()) {
+            for (FeatureTypeInfo ftInfo : catalog.getFeatureTypesByDataStore(dsInfo))
+                try {
+                    if (!(ftInfo.getFeatureType() instanceof SimpleFeatureType)) {
+                        if (complexTypes == null) complexTypes = new ArrayList<>();
+                        complexTypes.add(ftInfo);
+                    }
+                } catch (IOException e) {
+                    // ignore bad types
+                }
         }
+        return complexTypes;
+    }
+
+    /**
+     * Injects complex types in a GetFeatureById query, by duplicating the original query for each
+     * complex type
+     *
+     * @param request the request to inject types into
+     * @param originalQuery the original, type-less, getFeatureById query
+     * @param catalog the catalog to extract complex features from
+     * @return A list containing typed copies of the original query, one for each complex type in
+     *     the catalog. An empty list is returned otherwise.
+     */
+    static List<Query> injectComplexTypes(
+            GetFeatureRequest request, Query originalQuery, Catalog catalog) {
+        List queries = request.getAdaptedQueries();
+        List<FeatureTypeInfo> complexTypes = getComplexFeatureTypes(catalog);
+        if (complexTypes != null) {
+
+            QueryType qt = (QueryType) originalQuery.getAdaptee();
+            for (FeatureTypeInfo complexType : complexTypes) {
+                QueryType copy = EcoreUtil.copy(qt);
+                copy.getTypeNames()
+                        .add(new QName(complexType.getNamespace().getURI(), complexType.getName()));
+                queries.add(copy);
+            }
+            ;
+            List<Query> resultQueries = request.getQueries();
+            expandTypeNames(request, resultQueries, true, catalog);
+            return resultQueries;
+        }
+        // if no complex type is found, return empty list
+        return new ArrayList<Query>();
     }
 
     /**
@@ -873,7 +940,7 @@ public class GetFeature {
         List queries = request.getAdaptedQueries();
         boolean foundGetFeatureById = expandStoredQueries(request, queries, storedQueryProvider);
 
-        return foundGetFeatureById;
+        return queries.size() == 1 && foundGetFeatureById;
     }
 
     /**
@@ -913,8 +980,7 @@ public class GetFeature {
                     throw exception;
                 }
 
-                List<net.opengis.wfs20.QueryType> compiled =
-                        storedQuery.compile(sq, storedQueryProvider.catalog);
+                List<QueryType> compiled = storedQuery.compile(sq);
                 queries.remove(i);
                 queries.addAll(i, compiled);
                 i += compiled.size();
