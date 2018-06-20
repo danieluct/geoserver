@@ -9,11 +9,15 @@ package org.geoserver.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.geoserver.ows.Dispatcher;
 import org.geotools.filter.v2_0.FES;
 import org.geotools.wfs.v2_0.WFS;
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.w3c.dom.Document;
 
 /**
@@ -74,6 +78,32 @@ public class FeatureGML32Test extends AbstractAppSchemaTestSupport {
         assertXpathEvaluatesTo("mf4", "//gsml:MappedFeature/@gml:id", doc);
     }
 
+    @Test
+    public void testSOAP11() throws Exception {
+        String xml =
+                "<soap:Envelope xmlns:soap='"
+                        + Dispatcher.SOAP_11_NS
+                        + "'> "
+                        + " <soap:Header/> "
+                        + " <soap:Body>"
+                        + "<wfs:GetFeature "
+                        + "service='WFS' "
+                        + "version='2.0.0' "
+                        + "xmlns:cdf='http://www.opengis.net/cite/data' "
+                        + "xmlns:wfs='http://www.opengis.net/wfs/2.0' "
+                        + "> "
+                        + "<wfs:Query typeNames='gsml:MappedFeature'> "
+                        + "</wfs:Query> "
+                        + "</wfs:GetFeature>"
+                        + " </soap:Body> "
+                        + "</soap:Envelope> ";
+
+        MockHttpServletResponse resp = postAsServletResponse("wfs", xml, "application/soap+xml");
+        assertEquals("application/soap+xml", resp.getContentType());
+        Document dom = dom(new ByteArrayInputStream(resp.getContentAsByteArray()));
+        print(dom);
+        assertEquals(Dispatcher.SOAP_11_NS, dom.getDocumentElement().getAttribute("xmlns:soap"));
+    }
     /** Test content of GetFeatureById response. */
     @Test
     public void testGetFeatureById() throws Exception {

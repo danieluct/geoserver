@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.ErrorListener;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -380,7 +381,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         try {
             // the output file has to be unique with each Class object to ensure concurrency
             encode(results, out, encoder);
-            this.transform(in, this.getXSLT(), output);
+            this.transform(in, this.getXSLT(), output, encoder.isOmitXMLDeclaration());
         } catch (TransformerException e) {
             throw (IOException) new IOException(e.getMessage()).initCause(e);
         } finally {
@@ -413,11 +414,14 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         return hasComplex;
     }
 
-    public void transform(InputStream in, DOMSource xslt, OutputStream out)
+    public void transform(
+            InputStream in, DOMSource xslt, OutputStream out, boolean ommitXmlDeclaration)
             throws TransformerException {
         TransformerFactory factory = TransformerFactory.newInstance();
         Transformer transformer =
                 (xslt == null ? factory.newTransformer() : factory.newTransformer(xslt));
+        transformer.setOutputProperty(
+                OutputKeys.OMIT_XML_DECLARATION, ommitXmlDeclaration ? "yes" : "no");
         transformer.setErrorListener(new TransformerErrorListener());
         transformer.transform(new StreamSource(in), new StreamResult(out));
     }
