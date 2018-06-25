@@ -134,4 +134,18 @@ public class GetPropertyValueTest extends AbstractAppSchemaTestSupport {
 
         assertXpathCount(2, "//gml:name", doc);
     }
+	
+	 @Test
+    public void testGmlId() throws Exception {
+        Document dom =
+                getAsDOM(
+                        "wfs?service=WFS&version=2.0.0&request=GetPropertyValue"
+                                + "&typename=gsml:MappedFeature&valueReference=@gml:id&count=1");
+        print(dom);
+
+        assertEquals("wfs:ValueCollection", dom.getDocumentElement().getNodeName());
+
+        assertXpathCount(1, "//wfs:member", dom);
+        assertXpathCount(1, "//wfs:member/gml:identifier", dom);
+    }
 }
