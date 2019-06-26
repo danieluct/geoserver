@@ -275,7 +275,7 @@ public class ColorMapLegendCreator {
         }
 
         public void setBand(final SelectedChannelType grayChannel) {
-            if (grayChannel != null) this.grayChannelName = grayChannel.getChannelName();
+            if (grayChannel != null) this.grayChannelName = grayChannel.getChannelName().toString();
 
             if (grayChannelName == null) this.grayChannelName = LegendUtils.DEFAULT_CHANNEL_NAME;
         }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ps:ProtectedSite gml:id="idvalue0" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gn="http://inspire.ec.europa.eu/schemas/gn/4.0" xmlns:gsr="http://www.isotc211.org/2005/gsr" xmlns:gss="http://www.isotc211.org/2005/gss" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:ps="http://inspire.ec.europa.eu/schemas/ps/4.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://inspire.ec.europa.eu/schemas/ps/4.0 ../src/test/resources/test-data/ProtectedSites.xsd ">
+  <gml:boundedBy nilReason="inapplicable">
+    <gml:Envelope axisLabels="" srsDimension="1" srsName="http://tempuri.org" uomLabels=""/>
+  </gml:boundedBy>
+  <gml:location gml:remoteSchema="http://tempuri.org" nilReason="inapplicable" xlink:actuate="onLoad" xlink:arcrole="http://tempuri.org" xlink:href="http://tempuri.org" xlink:role="http://tempuri.org" xlink:show="new" xlink:title="" xlink:type="simple">
+    <gml:Point axisLabels="" gml:id="idvalue1" srsDimension="1" srsName="http://tempuri.org" uomLabels="">
+      <gml:pos axisLabels="" srsDimension="1" srsName="http://tempuri.org" uomLabels="" xsi:type="gml:DirectPositionType">gml:pos</gml:pos>
+    </gml:Point>
+  </gml:location>
+  <ps:geometry gml:remoteSchema="http://tempuri.org" nilReason="inapplicable" owns="false" xlink:actuate="onLoad" xlink:arcrole="http://tempuri.org" xlink:href="http://tempuri.org" xlink:role="http://tempuri.org" xlink:show="new" xlink:title="" xlink:type="simple">
+    <gml:Point axisLabels="" gml:id="idvalue2" srsDimension="1" srsName="http://tempuri.org" uomLabels="">
+      <gml:pos axisLabels="" srsDimension="1" srsName="http://tempuri.org" uomLabels="" xsi:type="gml:DirectPositionType">gml:pos</gml:pos>
+    </gml:Point>
+  </ps:geometry>
+  <ps:inspireID>
+    <base:Identifier>
+      <base:localId>base:localId</base:localId>
+      <base:namespace>base:namespace</base:namespace>
+    </base:Identifier>
+  </ps:inspireID>
+  <ps:legalFoundationDate nilReason="inapplicable">2001-12-31T12:00:00</ps:legalFoundationDate>
+  <ps:legalFoundationDocument nilReason="inapplicable" owns="false">
+    <gmd:CI_Citation id="idvalue3" uuid="">
+      <gmd:title gco:nilReason=""/>
+      <gmd:date gmd:nilReason="" uuidref="" xlink:actuate="onLoad" xlink:arcrole="http://tempuri.org" xlink:href="http://tempuri.org" xlink:role="http://tempuri.org" xlink:show="new" xlink:title="" xlink:type="simple"/>
+    </gmd:CI_Citation>
+  </ps:legalFoundationDocument>
+  <ps:siteDesignation nilReason="inapplicable">
+    <ps:DesignationType>
+      <ps:designationScheme gml:remoteSchema="http://tempuri.org" nilReason="inapplicable" owns="false" xlink:actuate="onLoad" xlink:arcrole="http://tempuri.org" xlink:href="http://tempuri.org" xlink:role="http://tempuri.org" xlink:show="new" xlink:title="" xlink:type="simple"/>
+      <ps:designation gml:remoteSchema="http://tempuri.org" nilReason="inapplicable" owns="false" xlink:actuate="onLoad" xlink:arcrole="http://tempuri.org" xlink:href="http://tempuri.org" xlink:role="http://tempuri.org" xlink:show="new" xlink:title="" xlink:type="simple"/>
+    </ps:DesignationType>
+  </ps:siteDesignation>
+  <ps:siteName nilReason="inapplicable">
+    <gn:GeographicalName>
+      <gn:language nilReason="inapplicable">gn:language</gn:language>
+      <gn:nativeness gml:remoteSchema="http://tempuri.org" nilReason="inapplicable" owns="false" xlink:actuate="onLoad" xlink:arcrole="http://tempuri.org" xlink:href="http://tempuri.org" xlink:role="http://tempuri.org" xlink:show="new" xlink:title="" xlink:type="simple"/>
+      <gn:nameStatus gml:remoteSchema="http://tempuri.org" nilReason="inapplicable" owns="false" xlink:actuate="onLoad" xlink:arcrole="http://tempuri.org" xlink:href="http://tempuri.org" xlink:role="http://tempuri.org" xlink:show="new" xlink:title="" xlink:type="simple"/>
+      <gn:sourceOfName nilReason="inapplicable">gn:sourceOfName</gn:sourceOfName>
+      <gn:pronunciation nilReason="inapplicable">
+        <gn:PronunciationOfName/>
+      </gn:pronunciation>
+      <gn:spelling>
+        <gn:SpellingOfName>
+          <gn:text>gn:text</gn:text>
+          <gn:script nilReason="inapplicable">gn:script</gn:script>
+        </gn:SpellingOfName>
+      </gn:spelling>
+    </gn:GeographicalName>
+  </ps:siteName>
+  <ps:siteProtectionClassification nilReason="inapplicable">natureConservation</ps:siteProtectionClassification>
+</ps:ProtectedSite>

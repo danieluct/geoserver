@@ -49,7 +49,7 @@ public class WFSXmlUtils {
         }
 
         // check for cite compliance, we always validate for cite
-        if (wfs.isCiteCompliant()) {
+        if (true||wfs.isCiteCompliant()) {
             strict = Boolean.TRUE;
         }
         parser.setValidating(strict.booleanValue());

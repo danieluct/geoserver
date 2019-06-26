@@ -54,7 +54,7 @@ public class GetCapabilitiesTest extends WFS20TestSupport {
     public void revert() throws Exception {
         revertLayer(MockData.MPOLYGONS);
     }
-
+/*
     @Test
     public void testGet() throws Exception {
         Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities&version=2.0.0");
@@ -94,7 +94,22 @@ public class GetCapabilitiesTest extends WFS20TestSupport {
         assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement().getNodeName());
         assertEquals("2.0.0", doc.getDocumentElement().getAttribute("version"));
     }
+    */
+    @Test
+    public void testPost2() throws Exception {
+        String xml =
+                "<CreateStoredQuery xmlns=\"http://www.opengis.net/wfs/2.0\" service=\"WFS\" version=\"2.0.0\"> <StoredQueryDefinition xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\r\n" + 
+                " id=\"urn:example:wfs2-query:InvalidLang\"> <Title>GetFeatureByTypeName</Title> <Abstract>Returns feature representations by\r\n" + 
+                " type name.</Abstract> <Parameter name=\"typeName\" type=\"xsd:QName\"> <Abstract>Qualified name of feature type (required).</Abstract>\r\n" + 
+                " </Parameter> <QueryExpressionText isPrivate=\"false\" language=\"http://qry.example.org\" returnFeatureTypes=\"${typeName}\"> <Query\r\n" + 
+                " typeNames=\"${typeName}\"/> </QueryExpressionText> </StoredQueryDefinition> </CreateStoredQuery>";
 
+        Document doc = postAsDOM("wfs", xml);
+        assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement().getNodeName());
+        assertEquals("2.0.0", doc.getDocumentElement().getAttribute("version"));
+    }
+
+/*
     @Test
     public void testNamespaceFilter() throws Exception {
         // filter on an existing namespace
@@ -162,12 +177,14 @@ public class GetCapabilitiesTest extends WFS20TestSupport {
 
         assertEquals(s1, s2);
     }
+    */
 
     /**
      * Minimum compliance for the resolve parameter
      *
      * @throws Exception
      */
+    /*
     @Test
     public void testResolveParameter() throws Exception {
         Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities&version=2.0.0");
@@ -205,8 +222,9 @@ public class GetCapabilitiesTest extends WFS20TestSupport {
         assertEquals(expectedSpatialOperators.size(), ops.size());
         assertTrue(ops.containsAll(expectedSpatialOperators));
     }
-
+*/
     /** See ISO 19142: Table 1, Table 13, A.1.2 */
+    /*
     @Test
     public void testBasicWFSFesConstraints() throws Exception {
         Document doc = getAsDOM("wfs?service=WFS&request=getCapabilities&version=2.0.0");
@@ -643,4 +661,5 @@ public class GetCapabilitiesTest extends WFS20TestSupport {
             gs.save(wfs);
         }
     }
+    */
 }

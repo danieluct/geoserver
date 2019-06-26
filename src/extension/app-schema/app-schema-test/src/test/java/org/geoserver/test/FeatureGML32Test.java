@@ -231,6 +231,49 @@ public class FeatureGML32Test extends AbstractAppSchemaTestSupport {
         assertXpathCount(1, "//gsml:MappedFeature", doc);
         assertXpathEvaluatesTo("mf4", "//gsml:MappedFeature/@gml:id", doc);
     }
+    
+    
+    @Test
+    public void testPLM() throws Exception {
+        String xml =
+                "<wfs:GetFeature xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" count=\"10\" service=\"WFS\" "
+                + "startIndex=\"0\" version=\"2.0.0\" "+
+                "            xmlns:gsml='urn:cgi:xmlns:CGI:GeoSciML-Core:3.0.0'>" + 
+                "    <wfs:Query typeNames=\"gsml:MappedFeature\">" + 
+                "        <fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">" + 
+                "            <fes:BBOX>\r\n" + 
+                "                <fes:ValueReference >gsml:shape</fes:ValueReference>" + 
+                "                <gml:Envelope" + 
+                "                                 xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"urn:ogc:def:crs:EPSG::3035\">" + 
+                "                    <gml:lowerCorner>2472786.17 5589852.23</gml:lowerCorner>\r\n" + 
+                "                    <gml:upperCorner>2820764.3 5836814.71</gml:upperCorner>\r\n" + 
+                "                </gml:Envelope>\r\n" + 
+                "            </fes:BBOX>\r\n" + 
+                "        </fes:Filter>\r\n" + 
+                "    </wfs:Query>\r\n" + 
+                "</wfs:GetFeature>";
+        Document doc = postAsDOM("wfs", xml);
+        assertEquals("wfs:CreateStoredQueryResponse", doc.getDocumentElement().getNodeName());
+
+        xml =
+                "<wfs:GetFeature service='WFS' version='2.0.0' "
+                        + "       xmlns:wfs='"
+                        + WFS.NAMESPACE
+                        + "' xmlns:fes='"
+                        + FES.NAMESPACE
+                        + "'>"
+                        + "   <wfs:StoredQuery id='myStoredQuery'> "
+                        + "      <wfs:Parameter name='descr'>"
+                        + "        <fes:Literal>Olivine basalt</fes:Literal>"
+                        + "      </wfs:Parameter> "
+                        + "   </wfs:StoredQuery> "
+                        + "</wfs:GetFeature>";
+        doc = postAsDOM("wfs", xml);
+        LOGGER.info(prettyString(doc));
+
+        assertXpathCount(1, "//gsml:MappedFeature", doc);
+        assertXpathEvaluatesTo("mf4", "//gsml:MappedFeature/@gml:id", doc);
+    }
 
     /** Test encoding of a multivalued mapping with an xlink:href ClientProperty. */
     @Test

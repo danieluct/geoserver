@@ -20,6 +20,8 @@ import org.geotools.util.Version;
 import org.geotools.wfs.v2_0.WFS;
 import org.geotools.xml.Parser;
 
+import net.opengis.wfs20.CreateStoredQueryType;
+
 /**
  * Xml reader for wfs 2.0 xml requests.
  *
@@ -57,7 +59,7 @@ public class WfsXmlReader extends XmlRequestReader {
             }
             throw e;
         }
-
+        if(!(parsed instanceof CreateStoredQueryType))
         WFSXmlUtils.checkValidationErrors(parser, this);
 
         return parsed;

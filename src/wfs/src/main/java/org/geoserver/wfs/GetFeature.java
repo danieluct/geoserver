@@ -27,6 +27,7 @@ import net.opengis.wfs20.ResultTypeType;
 import net.opengis.wfs20.StoredQueryType;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.LazyLoader;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
@@ -87,6 +88,10 @@ import org.opengis.filter.IncludeFilter;
 import org.opengis.filter.Not;
 import org.opengis.filter.Or;
 import org.opengis.filter.PropertyIsBetween;
+import org.opengis.filter.PropertyIsGreaterThan;
+import org.opengis.filter.PropertyIsGreaterThanOrEqualTo;
+import org.opengis.filter.PropertyIsLessThan;
+import org.opengis.filter.PropertyIsLessThanOrEqualTo;
 import org.opengis.filter.PropertyIsLike;
 import org.opengis.filter.PropertyIsNull;
 import org.opengis.filter.expression.Expression;
@@ -130,6 +135,58 @@ import org.xml.sax.helpers.NamespaceSupport;
  * @version $Id$
  */
 public class GetFeature {
+
+    class BoundedByFilterVisitor extends AbstractFilterVisitor {
+
+        private NamespaceSupport nsContext;
+
+        public BoundedByFilterVisitor(NamespaceSupport ns) {
+            nsContext = ns;
+        }
+
+        private void checkForBoundedBy(BinaryComparisonOperator arg0) {
+            if (arg0.getExpression1() instanceof PropertyName)
+                if (((PropertyName) arg0.getExpression1())
+                        .getPropertyName()
+                        .contains("gml:boundedBy"))
+                    throw new WFSException(
+                            (EObject) null,
+                            "Invalid operand boundedBy",
+                            WFSException.OPERATION_PROCESSING_FAILED);
+            if (arg0.getExpression2() instanceof PropertyName)
+                if (((PropertyName) arg0.getExpression2())
+                        .getPropertyName()
+                        .contains("gml:boundedBy"))
+                    throw new WFSException(
+                            (EObject) null,
+                            "Invalid operand boundedBy",
+                            WFSException.OPERATION_PROCESSING_FAILED);
+        }
+
+        @Override
+        public Object visit(PropertyIsLessThanOrEqualTo arg0, Object arg1) {
+            this.checkForBoundedBy(arg0);
+            return arg0;
+        }
+
+        @Override
+        public Object visit(PropertyIsGreaterThanOrEqualTo arg0, Object arg1) {
+            this.checkForBoundedBy(arg0);
+            return arg0;
+        }
+
+        @Override
+        public Object visit(PropertyIsLessThan arg0, Object arg1) {
+            this.checkForBoundedBy(arg0);
+            return arg0;
+        }
+
+        @Override
+        public Object visit(PropertyIsGreaterThan arg0, Object arg1) {
+            this.checkForBoundedBy(arg0);
+            return arg0;
+        }
+    }
 
     static final String GET_FEATURE_BY_ID_DEPRECATED = "urn:ogc:def:query:OGC-WFS::GetFeatureById";
     static final String GET_FEATURE_BY_ID =
@@ -502,7 +559,9 @@ public class GetFeature {
                             } else {
                                 validateFilter(filter, query, meta, request);
                             }
-                        } else {
+                        } else { // exlude bounded:by
+                            BoundedByFilterVisitor bbfv = new BoundedByFilterVisitor(ns);
+                            filter.accept(bbfv, null);
                             BBOXNamespaceSettingVisitor filterVisitor =
                                     new BBOXNamespaceSettingVisitor(ns);
                             filter.accept(filterVisitor, null);

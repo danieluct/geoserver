@@ -7,7 +7,10 @@ package org.geoserver.wfs.response.v2_0;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import javax.xml.namespace.QName;
 import net.opengis.wfs20.DescribeStoredQueriesResponseType;
+import net.opengis.wfs20.StoredQueryDescriptionType;
+import net.opengis.wfs20.QueryExpressionTextType;
 import org.geoserver.config.GeoServer;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -23,7 +26,21 @@ public class DescribeStoredQueriesResponse extends WFSResponse {
     @Override
     protected void encode(Encoder encoder, Object value, OutputStream output, Operation op)
             throws IOException, ServiceException {
-
+        DescribeStoredQueriesResponseType response = (DescribeStoredQueriesResponseType) value;
+        for (StoredQueryDescriptionType sqd : response.getStoredQueryDescription()) {
+            if(sqd.getQueryExpressionText()!=null){
+                for(QueryExpressionTextType qet: sqd.getQueryExpressionText()) {
+                    if (qet.getReturnFeatureTypes() != null) {
+                        for (QName qName : qet.getReturnFeatureTypes()) {
+                            if (qName.getNamespaceURI() != null && qName.getPrefix() != null) {
+                                encoder.getNamespaces()
+                                    .declarePrefix(qName.getPrefix(), qName.getNamespaceURI());
+                            }
+                        }
+                    }
+                }
+            }
+        }
         encoder.encode(value, WFS.DescribeStoredQueriesResponse, output);
     }
 }

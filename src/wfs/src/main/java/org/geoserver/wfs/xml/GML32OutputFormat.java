@@ -147,8 +147,19 @@ public class GML32OutputFormat extends GML3OutputFormat {
                         "No feature matching the requested id found",
                         WFSException.NOT_FOUND);
         } else {
+            try {
             encoder.encode(
                     results.unadapt(FeatureCollectionType.class), WFS.FeatureCollection, output);
+            } catch(IllegalArgumentException e)
+            {
+                if(e.getMessage().indexOf("not found in type")>0)
+                    throw new WFSException(
+                            (EObject) null,
+                            e.getMessage(),
+                            WFSException.INVALID_PARAMETER_VALUE);
+                else
+                    throw e;
+            }
         }
     }
 

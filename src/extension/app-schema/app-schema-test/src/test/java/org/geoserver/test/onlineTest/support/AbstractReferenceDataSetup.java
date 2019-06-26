@@ -5,7 +5,7 @@
  */
 package org.geoserver.test.onlineTest.support;
 
-import com.sun.rowset.CachedRowSetImpl;
+//import com.sun.rowset.CachedRowSetImpl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -143,6 +143,7 @@ public abstract class AbstractReferenceDataSetup extends JDBCTestSetup {
         }
     }
 
+
     /**
      * This method doesn't not handle paging therefore care must be taken when dealing with large
      * dataset.
@@ -150,6 +151,7 @@ public abstract class AbstractReferenceDataSetup extends JDBCTestSetup {
      * @param sql statement
      * @return CachedRowSetImpl the result from the execution of the sql
      */
+    /*
     public CachedRowSetImpl runWithResult(String sql) throws Exception {
         // connect
         Connection conn = getConnection();
@@ -164,7 +166,7 @@ public abstract class AbstractReferenceDataSetup extends JDBCTestSetup {
             conn.close();
         }
     }
-
+*/
     public void run(String input, boolean replaceNewLine) throws Exception {
         if (replaceNewLine) {
             run(input);

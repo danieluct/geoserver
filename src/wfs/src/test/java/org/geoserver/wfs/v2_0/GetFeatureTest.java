@@ -63,7 +63,7 @@ public class GetFeatureTest extends WFS20TestSupport {
                 TestData.class,
                 getCatalog());
     }
-
+/*
     @Test
     public void testSkipNumberMatched() throws Exception {
         FeatureTypeInfo fti = this.getCatalog().getFeatureTypeByName("Fifteen");
@@ -360,7 +360,7 @@ public class GetFeatureTest extends WFS20TestSupport {
         XMLAssert.assertXpathEvaluatesTo("1", "count(//sf:PrimitiveGeoFeature)", dom);
         XMLAssert.assertXpathExists("//sf:PrimitiveGeoFeature/gml:name[text() = 'name-f002']", dom);
     }
-
+*/
     @Test
     public void testGetWithFilter() throws Exception {
         Document dom =
@@ -396,7 +396,7 @@ public class GetFeatureTest extends WFS20TestSupport {
             assertTrue(feature.hasAttribute("gml:id"));
         }
     }
-
+/*
     @Test
     public void testPostMultipleQueriesDifferentNamespaces() throws Exception {
         String xml =
@@ -427,7 +427,8 @@ public class GetFeatureTest extends WFS20TestSupport {
         assertGML32(doc);
         assertEquals(5, doc.getElementsByTagName("sf:PrimitiveGeoFeature").getLength());
     }
-
+*/
+    /*
     @Test
     public void testPostWithFilter() throws Exception {
         String xml =
@@ -494,7 +495,7 @@ public class GetFeatureTest extends WFS20TestSupport {
         NodeList features = doc.getElementsByTagName("sf:PrimitiveGeoFeature");
         assertEquals(1, features.getLength());
     }
-
+*/
     @Test
     public void testPostWithBboxFilterOnBoundedBy() throws Exception {
         // CITE tests check filters against gml:BoundedBy property....
@@ -580,7 +581,7 @@ public class GetFeatureTest extends WFS20TestSupport {
             gs.save(wfs);
         }
     }
-
+/*
     @Test
     public void testPostWithFailingUrnBboxFilter() throws Exception {
         String xml =
@@ -1185,12 +1186,13 @@ public class GetFeatureTest extends WFS20TestSupport {
         Document dom = getAsDOM("wfs?request=GetFeature&version=2.0.0&storedQueryId=foobar", 400);
         checkOws11Exception(dom, "2.0.0", "InvalidParameterValue", "STOREDQUERY_ID");
     }
-
+*/
     /**
      * Used to NPE, see GEOS-7532
      *
      * @throws Exception
      */
+   /*
     @Test
     public void testDefaultStoredQueryGetWorkspaceQualified() throws Exception {
         Document dom =
@@ -1601,7 +1603,7 @@ public class GetFeatureTest extends WFS20TestSupport {
         response = postAsServletResponse("wfs", xml);
         assertThat(response.getContentType(), is("text/xml"));
     }
-
+*/
     /**
      * Check that a Filter 2.0 {@code fes:PropertyIsLike} returns the expected number of Buildings
      * for a given {@code matchCase}.
@@ -1609,6 +1611,7 @@ public class GetFeatureTest extends WFS20TestSupport {
      * @param matchCase value of {@code matchCase} filter attribute or {@code null} if none
      * @param expectedBuildings
      */
+    /*
     private void checkPropertyIsLikeMatchCase(Boolean matchCase, int expectedBuildings)
             throws Exception {
         // @formatter:off
@@ -1633,34 +1636,34 @@ public class GetFeatureTest extends WFS20TestSupport {
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
         assertEquals(expectedBuildings, doc.getElementsByTagName("cite:Buildings").getLength());
     }
-
+*/
     /**
      * Test that a Filter 2.0 {@code fes:PropertyIsLike} without {@code matchCase} matches zero
      * Buildings.
-     */
+     *//*
     @Test
     public void testPropertyIsLikeWithoutMatchCase() throws Exception {
         checkPropertyIsLikeMatchCase(null, 0);
     }
-
+*/
     /**
      * Test that a Filter 2.0 {@code fes:PropertyIsLike} with {@code matchCase="true"} matches zero
      * Buildings.
-     */
+     *//*
     @Test
     public void testPropertyIsLikeMatchCaseTrue() throws Exception {
         checkPropertyIsLikeMatchCase(true, 0);
     }
-
+*/
     /**
      * Test that a Filter 2.0 {@code fes:PropertyIsLike} with {@code matchCase="false"} matches two
      * Buildings.
-     */
+     *//*
     @Test
     public void testPropertyIsLikeMatchCaseFalse() throws Exception {
         checkPropertyIsLikeMatchCase(false, 2);
-    }
-
+    }*/
+    /*
     @Test
     public void testNumberOfDecimals() throws Exception {
         int oldDecimals = setDecimals(MockData.NAMED_PLACES, 3);
@@ -1687,6 +1690,7 @@ public class GetFeatureTest extends WFS20TestSupport {
             setDecimals(MockData.NAMED_PLACES, oldDecimals);
         }
     }
+    */
 
     private int setDecimals(QName name, int numDecimals) {
         Catalog catalog = getCatalog();

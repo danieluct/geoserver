@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import net.opengis.wfs.WfsFactory;
@@ -202,7 +204,8 @@ public abstract class BaseFeatureKvpRequestReader extends WFSKvpRequestReader {
                             WFSException exception =
                                     new WFSException(
                                             eObject,
-                                            "ResourceId is incosistent with " + "typenames");
+                                            "ResourceId is incosistent with " + "typenames:"+qName+
+                                            typeNames.stream().flatMap(List::stream).map( n -> n.toString() ).collect(Collectors.joining(";")));
                             exception.setCode(ServiceException.INVALID_PARAMETER_VALUE);
                             exception.setLocator(locator);
                             throw exception;
@@ -266,10 +269,30 @@ public abstract class BaseFeatureKvpRequestReader extends WFSKvpRequestReader {
     }
 
     QName getTypeNameFromFeatureId(String fid) throws Exception {
-        int pos = fid.indexOf(".");
+        String lfid=fid.substring(0);
+        if(fid.startsWith("RO.ENV.PADS."))
+            lfid=fid.substring(12);
+            
+        int pos = lfid.indexOf(".");
 
         if (pos != -1) {
-            String typeName = fid.substring(0, fid.lastIndexOf("."));
+            String typeName = lfid.substring(0, lfid.lastIndexOf("."));
+            switch(typeName.toLowerCase()) {
+            case "au":
+                typeName="au.AdministrativeUnit";
+                break;
+            case "br":
+                typeName="br.Bio-geographicalRegion";
+                break;
+            case "ps":
+                typeName="ps.ProtectedSite";
+                break;
+            case "np":
+                typeName="gn.NamedPlace";
+                break;
+            default:
+                assert true;
+            }
 
             // add to a list to set on the query
             List<QName> parsed = (List) qNameParser.parse(typeName);
